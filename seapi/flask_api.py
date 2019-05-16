@@ -8,8 +8,8 @@ api = Blueprint("api", __name__)
 db = SQLAlchemy()
 ma = Marshmallow()
 
-
-class Menu(db.Model):
+#FOOD
+class Food(db.Model):
     __tablename__ = "food"
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     name = db.Column(db.Text)
@@ -22,7 +22,7 @@ class Menu(db.Model):
         self.stock = stock
         self.price = price
 
-class MenuSchema(ma.Schema):
+class FoodSchema(ma.Schema):
     
     def __init__(self, strict = True, **kwargs):
         super().__init__(strict = strict, **kwargs)
@@ -30,15 +30,50 @@ class MenuSchema(ma.Schema):
     class Meta:
         fields = ("id", "name", "stock", "price")
 
-
-menuSchema = MenuSchema(many = True)
+foodSchema = FoodSchema(many = True)
 
 # Endpoint to show all food.
 @api.route("/showfood", methods = ["GET"])
 def getFoods():
-    foods = Menu.query.all()
-    result = menuSchema.dump(foods)
+    foods = Food.query.all()
+    result = foodSchema.dump(foods)
     return jsonify(result.data)
+
+#DRINK
+class Drink(db.Model):
+    __tablename__ = "drink"
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    name = db.Column(db.Text)
+    price = db.Column(db.Integer)
+    size = db.Column(db.Text)
+
+    def __init__(self, name, price, size, id = None):
+        self.id = id
+        self.name = name
+        self.price = price
+        self.size = size
+
+class DrinkSchema(ma.Schema):
+    
+    def __init__(self, strict = True, **kwargs):
+        super().__init__(strict = strict, **kwargs)
+    
+    class Meta:
+        fields = ("id", "name", "price", "size")
+
+drinkSchema = DrinkSchema(many = True)
+
+# Endpoint to show all drink.
+@api.route("/showdrink", methods = ["GET"])
+def getDrinks():
+    drinks = Drink.query.all()
+    result = drinkSchema.dump(drinks)
+    return jsonify(result.data)
+
+
+
+
+
 
 
 
