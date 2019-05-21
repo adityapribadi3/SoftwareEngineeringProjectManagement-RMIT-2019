@@ -114,6 +114,23 @@ def register():
     return userSchema.jsonify(newUser)
 
 
+#
+@api.route("/login", methods = ["POST"])
+def login():
+    emails = request.json["email"]
+    passwords = request.json["password"]
+    emailcheck = User.query.filter_by(email = emails).first()
+    passwordcheck = User.query.filter_by(password = passwords).first()
+
+    if not emailcheck or not passwordcheck:
+        return "INCORREct NOOB"
+    else:
+        return emails
+
+
+
+
+
 
 
 
