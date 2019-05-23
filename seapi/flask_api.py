@@ -123,9 +123,9 @@ def login():
     passwordcheck = User.query.filter_by(password = passwords).first()
 
     if not emailcheck or not passwordcheck:
-        return "INCORREct NOOB"
+        return jsonify(emails)
     else:
-        return emails
+        return jsonify(emails)
 
 
 
