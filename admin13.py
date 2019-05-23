@@ -44,7 +44,7 @@ class User(db.Model):
 	first_name = db.Column(db.String(64), nullable=False)
 	last_name = db.Column(db.String(50), nullable=False)
 	password = db.Column(db.String(50), nullable=False)
-	email = db.Column(db.String(128), nullable=False)
+	email = db.Column(db.String(128), nullable=False, unique=True)
 	cafeorder = db.relationship('Cafe_order', backref='user', lazy=True)
 	
 	def __str__(self):
@@ -70,7 +70,7 @@ class StaffView(ModelView):
 
 class Drink(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(50), nullable=False, unique=True)
+	name = db.Column(db.String(50), nullable=False)
 	price = db.Column(db.Integer, nullable=False)
 	size = db.Column(db.String(50), nullable=False)
 	image = db.Column(db.String(300), nullable=False)
