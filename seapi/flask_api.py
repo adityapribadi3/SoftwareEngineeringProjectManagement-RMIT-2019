@@ -17,12 +17,16 @@ class Food(db.Model):
     name = db.Column(db.Text)
     stock = db.Column(db.Integer)
     price = db.Column(db.Integer)
+    image = db.Column(db.Text)
+    description = db.Column(db.Text)
 
-    def __init__(self, name, stock, price, id = None):
+    def __init__(self, name, stock, price, image, description ,id = None):
         self.id = id
         self.name = name
         self.stock = stock
         self.price = price
+        self.image = image
+        self.description = description
 
 class FoodSchema(ma.Schema):
     
@@ -30,7 +34,7 @@ class FoodSchema(ma.Schema):
         super().__init__(strict = strict, **kwargs)
     
     class Meta:
-        fields = ("id", "name", "stock", "price")
+        fields = ("id", "name", "stock", "price", "image", "description")
 
 foodSchema = FoodSchema(many = True)
 
@@ -48,12 +52,16 @@ class Drink(db.Model):
     name = db.Column(db.Text)
     price = db.Column(db.Integer)
     size = db.Column(db.Text)
+    image = db.Column(db.Text)
+    description = db.Column(db.Text)
 
-    def __init__(self, name, price, size, id = None):
+    def __init__(self, name, price, size, image, description ,id = None):
         self.id = id
         self.name = name
         self.price = price
         self.size = size
+        self.image = image
+        self.description = description
 
 class DrinkSchema(ma.Schema):
     
@@ -61,7 +69,7 @@ class DrinkSchema(ma.Schema):
         super().__init__(strict = strict, **kwargs)
     
     class Meta:
-        fields = ("id", "name", "price", "size")
+        fields = ("id", "name", "price", "size", "image", "description")
 
 drinkSchema = DrinkSchema(many = True)
 
