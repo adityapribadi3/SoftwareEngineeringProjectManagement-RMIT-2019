@@ -161,7 +161,7 @@ class OrderSchema(ma.Schema):
     class Meta:
         fields = ("food_id", "drink_id", "user_id")
 
-OrderSchema = OrderSchema(many = True)
+OrderSchema = OrderSchema()
 
 @api.route("/order", methods = ["POST"])
 def order():
@@ -169,12 +169,22 @@ def order():
     drink = request.json["drink_id"]
     user = request.json["user_id"]
 
-    newOrder = Order(food, drink, user)
+    foodConvert = Food.query.filter_by(name = food).first()
+    foodid = foodConvert.id
+
+    drinkConvert = Drink.query.filter_by(name = drink).first()
+    drinkid = drinkConvert.id
+
+    userConvert = User.query.filter_by(first_name = user).first()
+    userid = userConvert.id
+
+    newOrder = Order(foodid, drinkid, userid)
 
     db.session.add(newOrder)
     db.session.commit()
 
-    return userSchema.jsonify(newOrder)
+    return OrderSchema.jsonify(newOrder)
+    #return success
     
 
 
