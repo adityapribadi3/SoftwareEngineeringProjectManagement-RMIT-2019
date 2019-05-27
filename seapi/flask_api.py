@@ -13,12 +13,12 @@ ma = Marshmallow()
 #FOOD
 class Food(db.Model):
     __tablename__ = "food"
-    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    name = db.Column(db.Text)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
     stock = db.Column(db.Integer)
     price = db.Column(db.Integer)
-    image = db.Column(db.Text)
-    description = db.Column(db.Text)
+    cafeorder = db.relationship('Order', backref='food', lazy=True)
+
 
     def __init__(self, name, stock, price, image, description ,id = None):
         self.id = id
@@ -48,13 +48,12 @@ def getFoods():
 #DRINK
 class Drink(db.Model):
     __tablename__ = "drink"
-    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    name = db.Column(db.Text)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
     price = db.Column(db.Integer)
-    size = db.Column(db.Text)
-    image = db.Column(db.Text)
-    description = db.Column(db.Text)
-
+    size = db.Column(db.String(50))
+    cafeorder = db.relationship('Order', backref='drink', lazy=True)
+    
     def __init__(self, name, price, size, image, description ,id = None):
         self.id = id
         self.name = name
@@ -83,11 +82,13 @@ def getDrinks():
 #REGISTER
 class User(db.Model):
     __tablename__ = "user"
-    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    first_name = db.Column(db.Text)
-    last_name = db.Column(db.Text)
-    password = db.Column(db.Text)
-    email = db.Column(db.Text)
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(64), nullable = False)
+    last_name = db.Column(db.String(50), nullable = False)
+    password = db.Column(db.String(50), nullable = False)
+    email = db.Column(db.String(128), nullable = False)
+    cafeorder = db.relationship('Order', backref='user', lazy=True)
+
 
     def __init__(self, first_name, last_name, password, email, id = None):
         self.id = id
@@ -122,7 +123,7 @@ def register():
     return userSchema.jsonify(newUser)
 
 
-#
+# login
 @api.route("/login", methods = ["POST"])
 def login():
     emails = request.json["email"]
@@ -137,9 +138,43 @@ def login():
 
 
 
+#Order
+class Order(db.Model):
+    __tablename__ = "Cafe_order"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    food_id = db.Column(db.Integer, db.ForeignKey('food.id'))
+    drink_id = db.Column(db.Integer, db.ForeignKey('drink.id'))
+   
 
+    def __init__(self, food_id, drink_id, user_id ,id = None):
+        self.id = id
+        self.food_id = food_id
+        self.drink_id = drink_id
+        self.user_id = user_id
 
+class OrderSchema(ma.Schema):
+    
+    def __init__(self, strict = True, **kwargs):
+        super().__init__(strict = strict, **kwargs)
+    
+    class Meta:
+        fields = ("food_id", "drink_id", "user_id")
 
+OrderSchema = OrderSchema(many = True)
 
+@api.route("/order", methods = ["POST"])
+def order():
+    food = request.json["food_id"]
+    drink = request.json["drink_id"]
+    user = request.json["user_id"]
+
+    newOrder = Order(food, drink, user)
+
+    db.session.add(newOrder)
+    db.session.commit()
+
+    return userSchema.jsonify(newOrder)
+    
 
 
