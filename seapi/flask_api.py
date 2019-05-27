@@ -140,7 +140,7 @@ def login():
 
 #Order
 class Order(db.Model):
-    __tablename__ = "Cafe_order"
+    __tablename__ = "cafe_order"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     food_id = db.Column(db.Integer, db.ForeignKey('food.id'))
